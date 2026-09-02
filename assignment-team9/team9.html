@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Disaster Relief Supply Chain</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f4f7fb;
+    color: #222;
+}
+
+header {
+    background: #172554;
+    color: white;
+    padding: 25px;
+    text-align: center;
+}
+
+header h1 {
+    margin-bottom: 8px;
+}
+
+.container {
+    width: 95%;
+    max-width: 1250px;
+    margin: 25px auto;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px #0002;
+}
+
+.card h3 {
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.card .number {
+    font-size: 28px;
+    font-weight: bold;
+    color: #172554;
+}
+
+.panel {
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px #0002;
+}
+
+.panel h2 {
+    margin-bottom: 15px;
+    color: #172554;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+th {
+    background: #e8eefc;
+}
+
+button {
+    padding: 11px 16px;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    margin: 5px;
+    font-weight: bold;
+}
+
+.primary {
+    background: #172554;
+    color: white;
+}
+
+.success {
+    background: #15803d;
+    color: white;
+}
+
+.warning {
+    background: #d97706;
+    color: white;
+}
+
+.danger {
+    background: #dc2626;
+    color: white;
+}
+
+.info {
+    background: #0369a1;
+    color: white;
+}
+
+select, input {
+    padding: 10px;
+    margin: 5px;
+    border: 1px solid #aaa;
+    border-radius: 6px;
+}
+
+.badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    color: white;
+    font-size: 12px;
+}
+
+.high {
+    background: #dc2626;
+}
+
+.medium {
+    background: #d97706;
+}
+
+.low {
+    background: #15803d;
+}
+
+#output {
+    background: #111827;
+    color: #00ff88;
+    padding: 20px;
+    border-radius: 8px;
+    min-height: 150px;
+    white-space: pre-line;
+    font-family: Consolas, monospace;
+}
+
+.graph {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 25px;
+}
+
+.node {
+    background: #172554;
+    color: white;
+    padding: 20px;
+    border-radius: 50%;
+    width: 110px;
+    height: 110px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-weight: bold;
+}
+
+.edge {
+    font-weight: bold;
+    color: #555;
+}
+
+@media(max-width: 800px) {
+    .dashboard {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🚨 Intelligent Disaster-Relief Supply Chain</h1>
+    <p>Graphs + Max Heap Priority Queue + Dynamic Delivery Optimization</p>
+</header>
+
+<div class="container">
+
+<!-- DASHBOARD -->
+
+<div class="dashboard">
+
+<div class="card">
+<h3>Total Zones</h3>
+<div class="number" id="totalZones">0</div>
+</div>
+
+<div class="card">
+<h3>Total Demand</h3>
+<div class="number" id="totalDemand">0</div>
+</div>
+
+<div class="card">
+<h3>High Urgency</h3>
+<div class="number" id="highUrgency">0</div>
+</div>
+
+<div class="card">
+<h3>Routes</h3>
+<div class="number" id="totalRoutes">0</div>
+</div>
+
+</div>
+
+
+<!-- GRAPH -->
+
+<div class="panel">
+
+<h2>🗺️ Warehouse–Disaster Zone Graph</h2>
+
+<div class="graph">
+
+<div class="node">Warehouse A</div>
+
+<div class="edge">
+→ 20 km<br>
+Capacity: 100
+</div>
+
+<div class="node">Zone 1</div>
+
+<div class="edge">
+→ 35 km<br>
+Capacity: 80
+</div>
+
+<div class="node">Zone 2</div>
+
+<div class="edge">
+→ 25 km<br>
+Capacity: 60
+</div>
+
+<div class="node">Zone 3</div>
+
+</div>
+
+<p>
+<strong>Graph Representation:</strong>
+Vertices represent warehouses/disaster zones and edges represent transportation routes.
+</p>
+
+</div>
+
+
+<!-- ZONE TABLE -->
+
+<div class="panel">
+
+<h2>📦 Disaster Zone Information</h2>
+
+<table>
+
+<thead>
+<tr>
+<th>ID</th>
+<th>Zone</th>
+<th>Demand</th>
+<th>Urgency</th>
+<th>Distance</th>
+<th>Vehicle Capacity</th>
+<th>Priority</th>
+</tr>
+</thead>
+
+<tbody id="zoneTable"></tbody>
+
+</table>
+
+</div>
+
+
+<!-- CONTROLS -->
+
+<div class="panel">
+
+<h2>⚙️ Priority Strategy</h2>
+
+<button class="primary" onclick="runStrategy('urgency')">
+Urgency First
+</button>
+
+<button class="success" onclick="runStrategy('demand')">
+Demand First
+</button>
+
+<button class="warning" onclick="runStrategy('distance')">
+Distance First
+</button>
+
+<button class="info" onclick="runStrategy('hybrid')">
+Hybrid Strategy
+</button>
+
+<button class="danger" onclick="compareStrategies()">
+Compare All Strategies
+</button>
+
+</div>
+
+
+<!-- UPDATE -->
+
+<div class="panel">
+
+<h2>🔄 Dynamic Priority Update</h2>
+
+<select id="zoneSelect">
+<option value="0">Zone 1</option>
+<option value="1">Zone 2</option>
+<option value="2">Zone 3</option>
+<option value="3">Zone 4</option>
+</select>
+
+<input type="number" id="newUrgency"
+placeholder="New urgency (1-10)"
+min="1"
+max="10">
+
+<button class="primary" onclick="updateUrgency()">
+Update Urgency
+</button>
+
+</div>
+
+
+<!-- RESULT -->
+
+<div class="panel">
+
+<h2>📊 Dispatch Result</h2>
+
+<div id="output">
+System ready...
+</div>
+
+</div>
+
+
+</div>
+
+
+<script>
+
+/* =====================================
+   DISASTER ZONE DATA
+===================================== */
+
+let zones = [
+
+{
+id: 1,
+name: "Zone 1",
+demand: 80,
+urgency: 9,
+distance: 20,
+capacity: 100
+},
+
+{
+id: 2,
+name: "Zone 2",
+demand: 120,
+urgency: 7,
+distance: 35,
+capacity: 80
+},
+
+{
+id: 3,
+name: "Zone 3",
+demand: 60,
+urgency: 10,
+distance: 25,
+capacity: 60
+},
+
+{
+id: 4,
+name: "Zone 4",
+demand: 150,
+urgency: 5,
+distance: 50,
+capacity: 70
+}
+
+];
+
+
+/* =====================================
+   GRAPH
+===================================== */
+
+let routes = [
+
+{
+from: "Warehouse A",
+to: "Zone 1",
+distance: 20,
+capacity: 100
+},
+
+{
+from: "Warehouse A",
+to: "Zone 2",
+distance: 35,
+capacity: 80
+},
+
+{
+from: "Warehouse A",
+to: "Zone 3",
+distance: 25,
+capacity: 60
+},
+
+{
+from: "Warehouse A",
+to: "Zone 4",
+distance: 50,
+capacity: 70
+}
+
+];
+
+
+/* =====================================
+   MAX HEAP
+===================================== */
+
+class MaxHeap {
+
+constructor() {
+this.heap = [];
+}
+
+insert(item) {
+
+this.heap.push(item);
+
+let i = this.heap.length - 1;
+
+while(i > 0) {
+
+let parent = Math.floor((i - 1) / 2);
+
+if(this.heap[parent].priority >= this.heap[i].priority)
+break;
+
+[this.heap[parent], this.heap[i]] =
+[this.heap[i], this.heap[parent]];
+
+i = parent;
+
+}
+
+}
+
+extractMax() {
+
+if(this.heap.length === 0)
+return null;
+
+if(this.heap.length === 1)
+return this.heap.pop();
+
+let max = this.heap[0];
+
+this.heap[0] = this.heap.pop();
+
+let i = 0;
+
+while(true) {
+
+let left = 2 * i + 1;
+let right = 2 * i + 2;
+
+let largest = i;
+
+if(left < this.heap.length &&
+this.heap[left].priority >
+this.heap[largest].priority)
+largest = left;
+
+if(right < this.heap.length &&
+this.heap[right].priority >
+this.heap[largest].priority)
+largest = right;
+
+if(largest === i)
+break;
+
+[this.heap[i], this.heap[largest]] =
+[this.heap[largest], this.heap[i]];
+
+i = largest;
+
+}
+
+return max;
+
+}
+
+}
+
+
+/* =====================================
+   PRIORITY FUNCTIONS
+===================================== */
+
+function calculatePriority(zone, strategy) {
+
+if(strategy === "urgency") {
+
+return zone.urgency * 100;
+
+}
+
+if(strategy === "demand") {
+
+return zone.demand;
+
+}
+
+if(strategy === "distance") {
+
+return 1000 / (zone.distance + 1);
+
+}
+
+if(strategy === "hybrid") {
+
+return (
+zone.urgency * 50 +
+zone.demand * 2 +
+1000 / (zone.distance + 1)
+);
+
+}
+
+}
+
+
+/* =====================================
+   DISPLAY ZONES
+===================================== */
+
+function displayZones() {
+
+let table =
+document.getElementById("zoneTable");
+
+table.innerHTML = "";
+
+zones.forEach(zone => {
+
+let priority =
+calculatePriority(zone, "hybrid");
+
+let level = "low";
+
+if(zone.urgency >= 8)
+level = "high";
+
+else if(zone.urgency >= 5)
+level = "medium";
+
+table.innerHTML += `
+
+<tr>
+
+<td>${zone.id}</td>
+
+<td><strong>${zone.name}</strong></td>
+
+<td>${zone.demand}</td>
+
+<td>
+<span class="badge ${level}">
+${zone.urgency}/10
+</span>
+</td>
+
+<td>${zone.distance} km</td>
+
+<td>${zone.capacity}</td>
+
+<td>${priority.toFixed(2)}</td>
+
+</tr>
+
+`;
+
+});
+
+updateDashboard();
+
+}
+
+
+/* =====================================
+   DASHBOARD
+===================================== */
+
+function updateDashboard() {
+
+document.getElementById("totalZones")
+.innerText = zones.length;
+
+document.getElementById("totalDemand")
+.innerText =
+zones.reduce((sum,z) => sum + z.demand,0);
+
+document.getElementById("highUrgency")
+.innerText =
+zones.filter(z => z.urgency >= 8).length;
+
+document.getElementById("totalRoutes")
+.innerText = routes.length;
+
+}
+
+
+/* =====================================
+   RUN PRIORITY STRATEGY
+===================================== */
+
+function runStrategy(strategy) {
+
+let heap = new MaxHeap();
+
+let output =
+"DISASTER RELIEF DISPATCH\n";
+
+output +=
+"============================\n";
+
+output +=
+"Strategy: " +
+strategy.toUpperCase() +
+"\n\n";
+
+
+zones.forEach((zone,index) => {
+
+heap.insert({
+
+index:index,
+
+priority:
+calculatePriority(zone,strategy)
+
+});
+
+});
+
+
+let delivered = 0;
+
+let remaining =
+zones.reduce(
+(sum,z) => sum + z.demand,
+0
+);
+
+
+while(heap.heap.length > 0) {
+
+let item =
+heap.extractMax();
+
+let zone =
+zones[item.index];
+
+let delivery =
+Math.min(
+zone.demand,
+zone.capacity
+);
+
+delivered += delivery;
+
+remaining -= delivery;
+
+output +=
+"Dispatch → " +
+zone.name +
+"\n";
+
+output +=
+"  Priority : " +
+item.priority.toFixed(2) +
+"\n";
+
+output +=
+"  Demand   : " +
+zone.demand +
+"\n";
+
+output +=
+"  Delivered: " +
+delivery +
+"\n";
+
+output +=
+"  Distance : " +
+zone.distance +
+" km\n";
+
+output +=
+"----------------------------\n";
+
+}
+
+
+output +=
+"\nTotal Delivered: " +
+delivered;
+
+output +=
+"\nRemaining Demand: " +
+remaining;
+
+output +=
+"\nEfficiency: " +
+(
+delivered /
+(zones.reduce(
+(sum,z)=>sum+z.demand,0
+)) * 100
+).toFixed(2) +
+"%";
+
+document.getElementById("output")
+.innerText = output;
+
+}
+
+
+/* =====================================
+   UPDATE URGENCY
+===================================== */
+
+function updateUrgency() {
+
+let index =
+document.getElementById("zoneSelect").value;
+
+let value =
+parseInt(
+document.getElementById("newUrgency").value
+);
+
+if(value < 1 || value > 10) {
+
+alert("Enter urgency between 1 and 10");
+
+return;
+
+}
+
+zones[index].urgency = value;
+
+displayZones();
+
+document.getElementById("output")
+.innerText =
+"Priority Updated Successfully!\n\n" +
+
+zones[index].name +
+" urgency changed to " +
+value +
+
+"\n\nHeap priorities will be recalculated during the next dispatch.";
+
+}
+
+
+/* =====================================
+   COMPARE STRATEGIES
+===================================== */
+
+function compareStrategies() {
+
+let strategies = [
+"urgency",
+"demand",
+"distance",
+"hybrid"
+];
+
+let output =
+"STRATEGY COMPARISON\n";
+
+output +=
+"============================\n\n";
+
+strategies.forEach(strategy => {
+
+let heap = new MaxHeap();
+
+zones.forEach((zone,index) => {
+
+heap.insert({
+
+index:index,
+
+priority:
+calculatePriority(
+zone,
+strategy
+)
+
+});
+
+});
+
+let order = [];
+
+while(heap.heap.length > 0) {
+
+let item =
+heap.extractMax();
+
+order.push(
+zones[item.index].name
+);
+
+}
+
+output +=
+strategy.toUpperCase() +
+" → " +
+order.join(" → ") +
+"\n\n";
+
+});
+
+
+output +=
+"RECOMMENDATION\n";
+
+output +=
+"Hybrid strategy provides a balanced priority using:\n";
+
+output +=
+"• Urgency\n";
+
+output +=
+"• Demand\n";
+
+output +=
+"• Distance\n";
+
+output +=
+"• Faster response\n";
+
+output +=
+"• Better resource utilization\n";
+
+document.getElementById("output")
+.innerText = output;
+
+}
+
+
+/* =====================================
+   INITIALIZE
+===================================== */
+
+displayZones();
+
+</script>
+
+</body>
+</html>
